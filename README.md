@@ -5,9 +5,14 @@ Defines **5 reels × 6 rows**, **cluster wins** (4-way connectivity, **minimum 5
 
 ## Playable sample (no Node)
 
-Open [`playable/index.html`](playable/index.html) in your browser (double-click, or **File → Open**). Choose a sample book or **Random sample**, then **Spin** to step through reveal → cluster highlights → wins → tumble (book 201) → **plaque feature** modal.
+Open the game in your browser:
 
-A **standalone copy** for drag-and-drop (Netlify Drop, etc.) lives outside this repo at **`C:\Users\steve\Lil-rapper-playable`** — it contains `index.html`, `.nojekyll`, **`lil-rapper-playable.zip`**, and a short `README.txt`. Your Desktop also gets an updated **`lil-rapper-playable.zip`** when that folder is regenerated.
+- **Windows (recommended):** double-click **`playable/OPEN_PLAYABLE.bat`** — it launches **Chrome or Edge** with `index.html` and clears “Mark of the Web” blocks that often cause “unable to open” for local HTML.
+- **Any OS:** open **`playable/index.html`** via **File → Open** in the browser, or right‑click the file → **Open with** → Chrome / Edge / Firefox.
+
+Choose a sample book or **Random sample**, then **Spin** to step through reveal → cluster highlights → wins → tumble (book 201) → **plaque feature** modal.
+
+A **standalone copy** for drag-and-drop (Netlify Drop, etc.) lives outside this repo at **`C:\Users\steve\Lil-rapper-playable`** — same files plus **`OPEN_PLAYABLE.bat`**, **`lil-rapper-playable.zip`**, and **`README.txt`**. Your Desktop gets **`lil-rapper-playable.zip`** when that folder is refreshed. **Do not double‑click the zip to “run” the game** — extract it first, or use Netlify Drop with the zip as a whole upload.
 
 If the browser blocks local scripts, serve the folder instead, for example: `npx --yes serve playable` or Python `python -m http.server` from the `playable` directory.
 
