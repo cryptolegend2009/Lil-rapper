@@ -27,13 +27,19 @@ Your site: **[https://cryptolegend2009.github.io/Lil-rapper/](https://cryptolege
 - **Organization repo** — an org owner may have disabled Pages; ask them or use the CDN link.
 - **Workflow permissions** — **Settings → Actions → General → Workflow permissions** → allow **Read and write** (so `GITHUB_TOKEN` can push `gh-pages`).
 
-#### No Pages at all — use a CDN (no settings)
+#### No Pages — try in the browser anyway (no repo settings)
 
-The game still loads from GitHub over jsDelivr (no Pages, no Actions source):
+GitHub and jsDelivr serve raw `index.html` with **`Content-Type: text/plain`**, so the browser **shows the source** instead of running the game. That is normal; it is not a broken file.
 
-**[https://cdn.jsdelivr.net/gh/cryptolegend2009/Lil-rapper@main/playable/index.html](https://cdn.jsdelivr.net/gh/cryptolegend2009/Lil-rapper@main/playable/index.html)**
+Use one of these instead:
 
-Re-run or test the branch workflow: **Actions → Publish gh-pages branch → Run workflow**.
+- **HTML preview (works in the browser, no Pages):**  
+  **[https://htmlpreview.github.io/?https://github.com/cryptolegend2009/Lil-rapper/blob/main/playable/index.html](https://htmlpreview.github.io/?https://github.com/cryptolegend2009/Lil-rapper/blob/main/playable/index.html)**  
+  (Loads the same file through a small preview wrapper so it runs as a real page.)
+
+- **Drag-and-drop host (free HTTPS, correct MIME):** open **[Netlify Drop](https://app.netlify.com/drop)** and drop your local **`playable`** folder (zip or folder). You get a random `https://something.netlify.app` URL that runs the game normally.
+
+Re-run the branch workflow: **Actions → Publish gh-pages branch → Run workflow**.
 
 ## Layout
 
