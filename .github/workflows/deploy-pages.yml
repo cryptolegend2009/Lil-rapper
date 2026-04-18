@@ -1,4 +1,5 @@
-# Pushes contents of /playable to branch gh-pages so you can enable Pages once in repo Settings.
+# Deploy static site from /playable using GitHub's official Pages actions (Node 24).
+# Repo Settings → Pages → Source must be "GitHub Actions" (not "Deploy from a branch").
 name: Deploy GitHub Pages
 
 on:
@@ -6,22 +7,32 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: pages-deploy
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
 
-      - name: Publish playable/ to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./playable
-          publish_branch: gh-pages
-          force_orphan: true
+          path: playable
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

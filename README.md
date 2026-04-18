@@ -11,13 +11,15 @@ If the browser blocks local scripts, serve the folder instead, for example: `npx
 
 ### GitHub Pages (your own URL)
 
-After you push to `main`, the workflow [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) publishes **`playable/`** to the **`gh-pages`** branch.
+The workflow [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) uses GitHub’s official **Pages** actions (Node **24**, no deprecated Node 20 composite steps) and uploads the **`playable/`** folder as the site artifact.
 
-**One-time setup:** in the repo on GitHub go to **Settings → Pages → Build and deployment → Source**, choose **Deploy from a branch**, branch **`gh-pages`**, folder **`/ (root)`**, then Save. The game will be at:
+**One-time setup:** in the repo go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions** (not “Deploy from a branch”). If you previously used the **`gh-pages`** branch, switch the source to **GitHub Actions** after this workflow is on `main`.
+
+Site URL (same pattern):
 
 `https://cryptolegend2009.github.io/Lil-rapper/`
 
-(First deploy runs after the next push to `main`; wait for the green check under **Actions**, then open the URL.)
+Wait for the **Deploy GitHub Pages** workflow to finish under **Actions**, then open that URL.
 
 ## Layout
 
