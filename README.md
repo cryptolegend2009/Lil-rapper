@@ -9,6 +9,16 @@ Open [`playable/index.html`](playable/index.html) in your browser (double-click,
 
 If the browser blocks local scripts, serve the folder instead, for example: `npx --yes serve playable` or Python `python -m http.server` from the `playable` directory.
 
+### GitHub Pages (your own URL)
+
+After you push to `main`, the workflow [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml) publishes **`playable/`** to the **`gh-pages`** branch.
+
+**One-time setup:** in the repo on GitHub go to **Settings → Pages → Build and deployment → Source**, choose **Deploy from a branch**, branch **`gh-pages`**, folder **`/ (root)`**, then Save. The game will be at:
+
+`https://cryptolegend2009.github.io/Lil-rapper/`
+
+(First deploy runs after the next push to `main`; wait for the green check under **Actions**, then open the URL.)
+
 ## Layout
 
 - Board shape matches Stake **web-sdk** cluster style: `board[reel][row]`, `Position = { reel, row }`.
