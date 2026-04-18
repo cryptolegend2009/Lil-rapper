@@ -1,0 +1,39 @@
+# Pushes playable/ to branch gh-pages (classic Pages — no "GitHub Actions" source required).
+# After first green run: Settings → Pages → Source → Deploy from a branch → gh-pages → / (root)
+name: Publish gh-pages branch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Push playable to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          SITE_DIR="$(mktemp -d)"
+          cp -a "${GITHUB_WORKSPACE}/playable"/. "${SITE_DIR}/"
+          cd "${SITE_DIR}"
+          git init
+          git checkout --orphan gh-pages
+          git add -A
+          git commit -m "Deploy ${GITHUB_SHA}"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin HEAD:gh-pages --force
