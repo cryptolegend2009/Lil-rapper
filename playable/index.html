@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cluster slot — playable sample (5×6)</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #181c24;
+        --text: #e8eaef;
+        --muted: #8b93a7;
+        --accent: #f5c542;
+        --win-glow: rgba(245, 197, 66, 0.35);
+        --feature: #c084fc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, Segoe UI, Roboto, sans-serif;
+        background: radial-gradient(1200px 800px at 50% -10%, #1a2230, var(--bg));
+        color: var(--text);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.25rem;
+      }
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.35rem;
+        font-weight: 650;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid #2a3140;
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+        width: min(440px, 100%);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 0.75rem;
+      }
+      label {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      select,
+      button {
+        font: inherit;
+        border-radius: 10px;
+        border: 1px solid #333a4a;
+        background: #222833;
+        color: var(--text);
+        padding: 0.45rem 0.65rem;
+      }
+      button.primary {
+        background: linear-gradient(180deg, #f0d060, #c9a020);
+        color: #1a1406;
+        font-weight: 700;
+        border-color: #a88618;
+        cursor: pointer;
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      #grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        margin: 0.75rem 0 1rem;
+      }
+      .cell {
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background: #1e2430;
+        border: 1px solid #2c3545;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        position: relative;
+        transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      }
+      .cell .bg {
+        position: absolute;
+        inset: 3px;
+        border-radius: 7px;
+        background: transparent;
+        z-index: 0;
+      }
+      .cell .sym {
+        position: relative;
+        z-index: 1;
+      }
+      .cell.highlight .bg {
+        background: var(--win-glow);
+        box-shadow: inset 0 0 0 2px var(--accent);
+      }
+      .cell.feature .sym {
+        color: var(--feature);
+      }
+      .cell.explode {
+        animation: pop 0.55s ease forwards;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+        40% {
+          transform: scale(1.08);
+          filter: brightness(1.6) saturate(0.3);
+        }
+        100% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+      }
+      #status {
+        font-size: 0.82rem;
+        color: var(--muted);
+        min-height: 1.25rem;
+      }
+      #wins {
+        font-size: 0.85rem;
+        line-height: 1.35;
+        color: #c8d0e0;
+        min-height: 2.5rem;
+      }
+      #total {
+        margin-top: 0.35rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.62);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        z-index: 50;
+      }
+      .overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: #151922;
+        border: 1px solid #333a4a;
+        border-radius: 16px;
+        padding: 1.1rem 1.2rem;
+        max-width: 360px;
+        width: 100%;
+      }
+      .modal h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.05rem;
+      }
+      .plaques {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .plaque {
+        flex: 1 1 42%;
+        min-width: 120px;
+        border-radius: 12px;
+        padding: 0.65rem 0.5rem;
+        text-align: center;
+        font-weight: 800;
+        border: 2px solid #555;
+        background: linear-gradient(180deg, #2a2f3a, #1a1e28);
+      }
+      .plaque .metal {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.85;
+      }
+      .plaque .val {
+        font-size: 1.35rem;
+        margin-top: 0.2rem;
+      }
+      .plaque.bronze {
+        border-color: #b87333;
+        color: #f0c090;
+      }
+      .plaque.copper {
+        border-color: #c97a4a;
+        color: #ffc8a8;
+      }
+      .plaque.silver {
+        border-color: #b8c0cc;
+        color: #eef2f8;
+      }
+      .plaque.platinum {
+        border-color: #e0e8ff;
+        color: #f4f7ff;
+        box-shadow: 0 0 18px rgba(200, 220, 255, 0.25);
+      }
+      .modal button {
+        margin-top: 0.85rem;
+        width: 100%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cluster slot — playable sample</h1>
+    <p class="sub">5×6 · 5+ cluster (4-way) · highlights · plaque feature (no build step)</p>
+    <div class="panel">
+      <div class="row">
+        <label for="bookPick">Book</label>
+        <select id="bookPick" aria-label="Sample book">
+          <option value="random">Random sample</option>
+          <option value="101">101 — big pay cluster</option>
+          <option value="102">102 — FEATURE only (plaques)</option>
+          <option value="103">103 — cluster + FEATURE</option>
+          <option value="201">201 — tumble → FEATURE → plaques</option>
+        </select>
+        <button type="button" class="primary" id="spinBtn">Spin</button>
+      </div>
+      <div id="grid" aria-live="polite"></div>
+      <div id="status"></div>
+      <div id="wins"></div>
+      <div id="total"></div>
+    </div>
+
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="featTitle">
+      <div class="modal">
+        <h2 id="featTitle">Plaque feature</h2>
+        <p style="margin: 0 0 0.6rem; font-size: 0.85rem; color: var(--muted)">
+          Copper / silver / bronze / platinum — ladder prizes (not coins).
+        </p>
+        <div class="plaques" id="plaqueList"></div>
+        <button type="button" id="closeFeat">Continue</button>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var REELS = 5;
+        var ROWS = 6;
+        var FEATURE = 'FEATURE';
+        var ORDERED = [1, 2, 5, 10, 15, 25, 50, 100, 150, 250, 500, 1000, 5000];
+
+        function metalForValue(value) {
+          var i = ORDERED.indexOf(value);
+          if (i < 0) return 'bronze';
+          if (i <= 2) return 'bronze';
+          if (i <= 5) return 'copper';
+          if (i <= 8) return 'silver';
+          return 'platinum';
+        }
+
+        function plaquePick(value) {
+          return { value: value, metal: metalForValue(value) };
+        }
+
+        function key(p) {
+          return p.reel + ',' + p.row;
+        }
+
+        function findClusters(board, minSize) {
+          minSize = minSize || 5;
+          var visited = Object.create(null);
+          var clusters = [];
+          var dirs = [
+            { reel: 1, row: 0 },
+            { reel: -1, row: 0 },
+            { reel: 0, row: 1 },
+            { reel: 0, row: -1 },
+          ];
+
+          for (var r = 0; r < REELS; r++) {
+            for (var row = 0; row < ROWS; row++) {
+              var start = { reel: r, row: row };
+              var sk = key(start);
+              if (visited[sk]) continue;
+              var sym = board[r] && board[r][row] && board[r][row].name;
+              if (sym === undefined) continue;
+
+              var queue = [start];
+              var component = [];
+              visited[sk] = true;
+
+              while (queue.length) {
+                var p = queue.pop();
+                component.push(p);
+                for (var di = 0; di < dirs.length; di++) {
+                  var d = dirs[di];
+                  var n = { reel: p.reel + d.reel, row: p.row + d.row };
+                  if (n.reel < 0 || n.reel >= REELS || n.row < 0 || n.row >= ROWS) continue;
+                  var nk = key(n);
+                  if (visited[nk]) continue;
+                  if (!board[n.reel] || !board[n.reel][n.row] || board[n.reel][n.row].name !== sym) continue;
+                  visited[nk] = true;
+                  queue.push(n);
+                }
+              }
+
+              if (component.length >= minSize) {
+                clusters.push({ symbol: sym, positions: component, size: component.length });
+              }
+            }
+          }
+          return clusters;
+        }
+
+        function clustersFromBoard(board, bet) {
+          bet = bet == null ? 1 : bet;
+          var found = findClusters(board, 5);
+          var wins = [];
+          var highlight = [];
+          for (var i = 0; i < found.length; i++) {
+            var c = found[i];
+            if (c.symbol === FEATURE) continue;
+            var base = c.size * 0.1 * bet;
+            wins.push({
+              symbol: c.symbol,
+              win: Math.round(base * 100) / 100,
+              positions: c.positions,
+            });
+            highlight.push({ symbol: c.symbol, positions: c.positions });
+          }
+          return { wins: wins, highlight: highlight };
+        }
+
+        function boardHasFeatureSymbol(board) {
+          for (var r = 0; r < board.length; r++) {
+            var reel = board[r];
+            if (!reel) continue;
+            for (var k = 0; k < reel.length; k++) {
+              if (reel[k] && reel[k].name === FEATURE) return true;
+            }
+          }
+          return false;
+        }
+
+        function samplePlaqueValues() {
+          return [25, 100, 500];
+        }
+
+        function buildSampleSpinBook(board, id) {
+          var out = clustersFromBoard(board);
+          var wins = out.wins;
+          var highlight = out.highlight;
+          var events = [];
+          var idx = 0;
+
+          events.push({
+            index: idx++,
+            type: 'reveal',
+            board: board,
+            paddingPositions: [0, 0, 0, 0, 0],
+            anticipation: [0, 0, 0, 0, 0],
+            gameType: 'basegame',
+          });
+
+          if (highlight.length) {
+            events.push({
+              index: idx++,
+              type: 'highlightClusters',
+              clusters: highlight,
+            });
+          }
+
+          var totalWin = 0;
+          for (var wi = 0; wi < wins.length; wi++) totalWin += wins[wi].win;
+
+          if (wins.length) {
+            events.push({
+              index: idx++,
+              type: 'winInfo',
+              totalWin: totalWin,
+              wins: wins,
+            });
+          }
+
+          if (boardHasFeatureSymbol(board)) {
+            var vals = samplePlaqueValues();
+            var plaques = [];
+            for (var pi = 0; pi < vals.length; pi++) {
+              var pk = plaquePick(vals[pi]);
+              plaques.push({ metal: pk.metal, value: pk.value });
+            }
+            events.push({
+              index: idx++,
+              type: 'plaqueFeature',
+              plaques: plaques,
+            });
+          }
+
+          events.push({ index: idx++, type: 'setTotalWin', amount: totalWin });
+          events.push({ index: idx++, type: 'finalWin', amount: totalWin });
+
+          return {
+            id: id,
+            payoutMultiplier: totalWin,
+            events: events,
+          };
+        }
+
+        function reel() {
+          var names = [].slice.call(arguments);
+          return names.map(function (n) {
+            return { name: n };
+          });
+        }
+
+        var boardSimpleCluster = [
+          reel('A', 'B', 'C', 'D', 'E', 'F'),
+          reel('B', 'A', 'A', 'A', 'A', 'A'),
+          reel('C', 'A', 'H1', 'H2', 'L1', 'L2'),
+          reel('D', 'A', 'L3', 'L4', 'L5', 'H3'),
+          reel('E', 'A', 'B', 'C', 'D', 'E'),
+        ];
+
+        var boardWithFeature = [
+          reel('L1', 'L2', 'L3', 'L4', 'L5', 'H1'),
+          reel('L2', 'FEATURE', 'H2', 'H3', 'L1', 'L2'),
+          reel('L3', 'H1', 'H2', 'H3', 'L3', 'L4'),
+          reel('L4', 'L5', 'H1', 'H2', 'H3', 'L5'),
+          reel('L5', 'H1', 'H2', 'H3', 'L1', 'L2'),
+        ];
+
+        var boardClusterAndFeature = [
+          reel('H1', 'H1', 'H1', 'H1', 'H1', 'L1'),
+          reel('H1', 'L2', 'L3', 'L4', 'L5', 'H2'),
+          reel('H1', 'FEATURE', 'L1', 'L2', 'L3', 'H3'),
+          reel('H1', 'L4', 'L5', 'H1', 'H2', 'L1'),
+          reel('H1', 'L2', 'L3', 'L4', 'L5', 'H2'),
+        ];
+
+        function cell(n) {
+          return { name: n };
+        }
+
+        var sampleTumblePlaqueBook = {
+          id: 201,
+          payoutMultiplier: 12.5,
+          events: [
+            {
+              index: 0,
+              type: 'reveal',
+              board: [
+                [cell('L1'), cell('H1'), cell('L3'), cell('L4'), cell('L5'), cell('H3')],
+                [cell('L1'), cell('L2'), cell('L3'), cell('L4'), cell('L5'), cell('H3')],
+                [cell('L1'), cell('L2'), cell('L3'), cell('H1'), cell('H2'), cell('H3')],
+                [cell('L3'), cell('L4'), cell('L5'), cell('H1'), cell('H2'), cell('H3')],
+                [cell('L4'), cell('L5'), cell('H1'), cell('H2'), cell('H3'), cell('L1')],
+              ],
+              paddingPositions: [0, 0, 0, 0, 0],
+              anticipation: [0, 0, 0, 0, 0],
+              gameType: 'basegame',
+            },
+            {
+              index: 1,
+              type: 'highlightClusters',
+              clusters: [
+                {
+                  symbol: 'L1',
+                  positions: [
+                    { reel: 0, row: 0 },
+                    { reel: 0, row: 1 },
+                    { reel: 1, row: 0 },
+                    { reel: 1, row: 1 },
+                    { reel: 2, row: 0 },
+                  ],
+                },
+              ],
+            },
+            {
+              index: 2,
+              type: 'winInfo',
+              totalWin: 2.5,
+              wins: [
+                {
+                  symbol: 'L1',
+                  win: 2.5,
+                  positions: [
+                    { reel: 0, row: 0 },
+                    { reel: 0, row: 1 },
+                    { reel: 1, row: 0 },
+                    { reel: 1, row: 1 },
+                    { reel: 2, row: 0 },
+                  ],
+                },
+              ],
+            },
+            {
+              index: 3,
+              type: 'tumbleBoard',
+              explodingSymbols: [
+                { reel: 0, row: 0 },
+                { reel: 0, row: 1 },
+                { reel: 1, row: 0 },
+                { reel: 1, row: 1 },
+                { reel: 2, row: 0 },
+              ],
+              newSymbols: [[cell('H3')], [cell('H2')], [cell('FEATURE')], [], []],
+            },
+            {
+              index: 4,
+              type: 'reveal',
+              board: [
+                [cell('H1'), cell('H1'), cell('L3'), cell('L4'), cell('L5'), cell('H3')],
+                [cell('H2'), cell('L2'), cell('L3'), cell('L4'), cell('L5'), cell('H3')],
+                [cell('L2'), cell('L2'), cell('FEATURE'), cell('H1'), cell('H2'), cell('H3')],
+                [cell('L3'), cell('L4'), cell('L5'), cell('H1'), cell('H2'), cell('H3')],
+                [cell('L4'), cell('L5'), cell('H1'), cell('H2'), cell('H3'), cell('L1')],
+              ],
+              paddingPositions: [0, 0, 0, 0, 0],
+              anticipation: [0, 0, 0, 0, 0],
+              gameType: 'basegame',
+            },
+            {
+              index: 5,
+              type: 'plaqueFeature',
+              plaques: [
+                { metal: plaquePick(50).metal, value: 50 },
+                { metal: plaquePick(250).metal, value: 250 },
+              ],
+              sourcePositions: [{ reel: 2, row: 2 }],
+            },
+            { index: 6, type: 'setTotalWin', amount: 12.5 },
+            { index: 7, type: 'finalWin', amount: 12.5 },
+          ],
+        };
+
+        var built = {
+          101: buildSampleSpinBook(boardSimpleCluster, 101),
+          102: buildSampleSpinBook(boardWithFeature, 102),
+          103: buildSampleSpinBook(boardClusterAndFeature, 103),
+          201: sampleTumblePlaqueBook,
+        };
+
+        function delay(ms) {
+          return new Promise(function (res) {
+            setTimeout(res, ms);
+          });
+        }
+
+        var gridEl = document.getElementById('grid');
+        var statusEl = document.getElementById('status');
+        var winsEl = document.getElementById('wins');
+        var totalEl = document.getElementById('total');
+        var spinBtn = document.getElementById('spinBtn');
+        var bookPick = document.getElementById('bookPick');
+        var overlay = document.getElementById('overlay');
+        var plaqueList = document.getElementById('plaqueList');
+        var closeFeat = document.getElementById('closeFeat');
+
+        function ensureGridBuilt() {
+          if (gridEl.children.length) return;
+          for (var row = 0; row < ROWS; row++) {
+            for (var reel = 0; reel < REELS; reel++) {
+              var d = document.createElement('div');
+              d.className = 'cell';
+              d.id = 'c-' + reel + '-' + row;
+              d.innerHTML = '<span class="bg"></span><span class="sym"></span>';
+              gridEl.appendChild(d);
+            }
+          }
+        }
+
+        function clearHighlights() {
+          var cells = gridEl.querySelectorAll('.cell');
+          for (var i = 0; i < cells.length; i++) {
+            cells[i].classList.remove('highlight', 'explode', 'feature');
+          }
+        }
+
+        function applyFeatureClasses() {
+          for (var reel = 0; reel < REELS; reel++) {
+            for (var row = 0; row < ROWS; row++) {
+              var el = document.getElementById('c-' + reel + '-' + row);
+              var sym = el.querySelector('.sym').textContent;
+              if (sym === FEATURE) el.classList.add('feature');
+            }
+          }
+        }
+
+        function renderBoard(board) {
+          ensureGridBuilt();
+          clearHighlights();
+          for (var reel = 0; reel < REELS; reel++) {
+            for (var row = 0; row < ROWS; row++) {
+              var el = document.getElementById('c-' + reel + '-' + row);
+              var sym = board[reel] && board[reel][row] ? board[reel][row].name : '';
+              el.querySelector('.sym').textContent = sym;
+            }
+          }
+          applyFeatureClasses();
+        }
+
+        function setHighlightClusters(clusters) {
+          clearHighlights();
+          for (var ci = 0; ci < clusters.length; ci++) {
+            var pos = clusters[ci].positions;
+            for (var pi = 0; pi < pos.length; pi++) {
+              var p = pos[pi];
+              var el = document.getElementById('c-' + p.reel + '-' + p.row);
+              if (el) el.classList.add('highlight');
+            }
+          }
+          applyFeatureClasses();
+        }
+
+        function showWinInfo(ev) {
+          var lines = ['Total win: ' + ev.totalWin];
+          for (var i = 0; i < ev.wins.length; i++) {
+            var w = ev.wins[i];
+            lines.push(w.symbol + ': +' + w.win + ' (' + w.positions.length + ' symbols)');
+          }
+          winsEl.textContent = lines.join('\n');
+        }
+
+        function showPlaqueModal(ev) {
+          plaqueList.innerHTML = '';
+          for (var i = 0; i < ev.plaques.length; i++) {
+            var p = ev.plaques[i];
+            var div = document.createElement('div');
+            div.className = 'plaque ' + p.metal;
+            div.innerHTML =
+              '<div class="metal">' +
+              p.metal +
+              '</div><div class="val">' +
+              p.value +
+              '</div>';
+            plaqueList.appendChild(div);
+          }
+          overlay.classList.add('show');
+          return new Promise(function (resolve) {
+            function done() {
+              overlay.classList.remove('show');
+              closeFeat.removeEventListener('click', done);
+              resolve();
+            }
+            closeFeat.addEventListener('click', done);
+          });
+        }
+
+        function tumbleExplode(positions) {
+          for (var i = 0; i < positions.length; i++) {
+            var p = positions[i];
+            var el = document.getElementById('c-' + p.reel + '-' + p.row);
+            if (el) el.classList.add('explode');
+          }
+          return delay(580);
+        }
+
+        async function playBook(book) {
+          winsEl.textContent = '';
+          totalEl.textContent = '';
+          spinBtn.disabled = true;
+          for (var i = 0; i < book.events.length; i++) {
+            var ev = book.events[i];
+            statusEl.textContent = 'Book ' + book.id + ' — ' + ev.type;
+            if (ev.type === 'reveal') {
+              renderBoard(ev.board);
+              await delay(380);
+            } else if (ev.type === 'highlightClusters') {
+              setHighlightClusters(ev.clusters);
+              await delay(650);
+            } else if (ev.type === 'winInfo') {
+              showWinInfo(ev);
+              await delay(900);
+            } else if (ev.type === 'tumbleBoard') {
+              await tumbleExplode(ev.explodingSymbols);
+              clearHighlights();
+              await delay(280);
+            } else if (ev.type === 'plaqueFeature') {
+              await showPlaqueModal(ev);
+            } else if (ev.type === 'setTotalWin' || ev.type === 'finalWin') {
+              totalEl.textContent = 'Round total: ' + ev.amount;
+              await delay(350);
+            }
+          }
+          statusEl.textContent = 'Idle — pick a book and spin.';
+          spinBtn.disabled = false;
+        }
+
+        function pickBook() {
+          var v = bookPick.value;
+          if (v === 'random') {
+            var keys = ['101', '102', '103', '201'];
+            v = keys[Math.floor(Math.random() * keys.length)];
+          }
+          return built[v];
+        }
+
+        spinBtn.addEventListener('click', function () {
+          var book = pickBook();
+          playBook(book);
+        });
+
+        ensureGridBuilt();
+        renderBoard(boardSimpleCluster);
+        statusEl.textContent = 'Idle — pick a book and spin.';
+      })();
+    </script>
+  </body>
+</html>

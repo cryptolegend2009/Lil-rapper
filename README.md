@@ -3,6 +3,12 @@
 Defines **5 reels × 6 rows**, **cluster wins** (4-way connectivity, **minimum 5** matching symbols), **cell highlights** for wins, and a **plaque feature** (bronze / copper / silver / platinum) with prize ladder  
 `1, 2, 5, 10, 15, 25, 50, 100, 150, 250, 500, 1000, 5000` when the **`FEATURE`** symbol is present (stand-in for your special symbol that tumbles in).
 
+## Playable sample (no Node)
+
+Open [`playable/index.html`](playable/index.html) in your browser (double-click, or **File → Open**). Choose a sample book or **Random sample**, then **Spin** to step through reveal → cluster highlights → wins → tumble (book 201) → **plaque feature** modal.
+
+If the browser blocks local scripts, serve the folder instead, for example: `npx --yes serve playable` or Python `python -m http.server` from the `playable` directory.
+
 ## Layout
 
 - Board shape matches Stake **web-sdk** cluster style: `board[reel][row]`, `Position = { reel, row }`.
