@@ -6,3 +6,6 @@ Thumbs.db
 
 # Local static server / OS noise
 playable/.cache/
+
+# Local drag-and-drop zip (regenerate with Compress-Archive; do not commit)
+lil-rapper-playable.zip
