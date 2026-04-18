@@ -7,6 +7,8 @@ Defines **5 reels × 6 rows**, **cluster wins** (4-way connectivity, **minimum 5
 
 Open [`playable/index.html`](playable/index.html) in your browser (double-click, or **File → Open**). Choose a sample book or **Random sample**, then **Spin** to step through reveal → cluster highlights → wins → tumble (book 201) → **plaque feature** modal.
 
+A **standalone copy** for drag-and-drop (Netlify Drop, etc.) lives outside this repo at **`C:\Users\steve\Lil-rapper-playable`** — it contains `index.html`, `.nojekyll`, **`lil-rapper-playable.zip`**, and a short `README.txt`. Your Desktop also gets an updated **`lil-rapper-playable.zip`** when that folder is regenerated.
+
 If the browser blocks local scripts, serve the folder instead, for example: `npx --yes serve playable` or Python `python -m http.server` from the `playable` directory.
 
 ### GitHub Pages (easier setup — branch only)
