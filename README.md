@@ -37,7 +37,9 @@ Use one of these instead:
   **[https://htmlpreview.github.io/?https://github.com/cryptolegend2009/Lil-rapper/blob/main/playable/index.html](https://htmlpreview.github.io/?https://github.com/cryptolegend2009/Lil-rapper/blob/main/playable/index.html)**  
   (Loads the same file through a small preview wrapper so it runs as a real page.)
 
-- **Drag-and-drop host (free HTTPS, correct MIME):** open **[Netlify Drop](https://app.netlify.com/drop)** and drop your local **`playable`** folder (zip or folder). You get a random `https://something.netlify.app` URL that runs the game normally.
+- **Drag-and-drop host (free HTTPS, correct MIME):** open **[Netlify Drop](https://app.netlify.com/drop)** and drop your local **`playable`** folder or a zip whose **root** contains `index.html`. On your machine you can regenerate **`lil-rapper-playable.zip`** next to the repo with PowerShell:  
+  `Compress-Archive -Path "playable\*" -DestinationPath "lil-rapper-playable.zip" -Force`  
+  (A copy is also placed on your **Desktop** when created from this project.)
 
 Re-run the branch workflow: **Actions → Publish gh-pages branch → Run workflow**.
 
