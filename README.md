@@ -21,6 +21,24 @@ Site URL (same pattern):
 
 Wait for the **Deploy GitHub Pages** workflow to finish under **Actions**, then open that URL.
 
+### Troubleshooting Pages
+
+1. **Source must be GitHub Actions**  
+   [Settings → Pages](https://github.com/cryptolegend2009/Lil-rapper/settings/pages) → **Build and deployment** → **Source** → **GitHub Actions** → Save.  
+   If it is still **Deploy from a branch** (`gh-pages`), the Actions deploy will not publish your artifact to the site URL.
+
+2. **Workflow stuck “Waiting for approval”**  
+   [Settings → Environments](https://github.com/cryptolegend2009/Lil-rapper/settings/environments) → **github-pages** → remove **Required reviewers** (or approve the pending deployment in the Actions run).
+
+3. **Read the failing step**  
+   [Actions → Deploy GitHub Pages](https://github.com/cryptolegend2009/Lil-rapper/actions/workflows/deploy-pages.yml) → open the latest run → expand the red step; search that error text in [GitHub Pages troubleshooting](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#troubleshooting-publishing-with-a-custom-github-actions-workflow).
+
+4. **Retry without a new commit**  
+   In Actions, open **Deploy GitHub Pages** → **Run workflow** (manual run is enabled).
+
+5. **Site URL**  
+   [https://cryptolegend2009.github.io/Lil-rapper/](https://cryptolegend2009.github.io/Lil-rapper/) (can take a minute after a green deploy).
+
 ## Layout
 
 - Board shape matches Stake **web-sdk** cluster style: `board[reel][row]`, `Position = { reel, row }`.
